@@ -30,15 +30,15 @@ void setup(){
 }
 
 void loop(){
-	atualizacao();  //Atualiza o frame ao final de cada movimento.
+	atualizacao();         //Atualiza o frame ao final de cada movimento.
 	while(!comparacao()){
-    incremento();   //Suavizar o movimento dos servos.
-	  calcs();   //Faz os cálculos necessários para descobrir os ângulos dos servos.
-	  verificacao();   //Verifica se os ângulos estão dentro do limite permitido.
-	  mover();    //Move os servos.
-	  debug();   //Envia informações úteis para diagnóstico.
+    incremento();          //Suavizar o movimento dos servos.
+	  calcs();             //Faz os cálculos necessários para descobrir os ângulos dos servos.
+	  verificacao();       //Verifica se os ângulos estão dentro do limite permitido.
+	  mover();             //Move os servos.
+	  debug();             //Envia informações úteis para diagnóstico.
   }
-  abrirGarra();    //Controla a abertura da garra.
+  abrirGarra();            //Controla a abertura da garra.
 }
 
 void conexoes(){
@@ -51,14 +51,14 @@ void conexoes(){
 void escritaInicial(){
 	base.write(posInicial[0]);       //Posiciona o servo da base na posicao inicial.
 	braco.write(posInicial[1]);      //Posiciona o servo do braco na posicao inicial.
-  antebraco.write(posInicial[2]);  //Posiciona o servo do antebraco na posicao inicial.
-  garra.write(posInicial[3]);      //Posiciona o servo da garra na posicao inicial.
+  antebraco.write(posInicial[2]);    //Posiciona o servo do antebraco na posicao inicial.
+  garra.write(posInicial[3]);        //Posiciona o servo da garra na posicao inicial.
 }
 
 void contagem(){
 	Serial.println("Pronto.");   //Envia a mensagem pronto para sabermos que os servos se conectaram e chegaram a posição inicial.
-  Serial.print("Contagem: ");  //Inicia a Contagem para o início do roteiro.
-  for(int i = 3; i > 0; i--){  //Faz a contagem regressiva.
+  Serial.print("Contagem: ");    //Inicia a Contagem para o início do roteiro.
+  for(int i = 3; i > 0; i--){    //Faz a contagem regressiva.
     Serial.print(i);
     if(i!=1){
       Serial.print(", ");
@@ -86,7 +86,7 @@ void incremento(){
   for(int i = 0; i < 3; i++){   //Salva cada valor do frame atual na variável.
     obj[i]=frame[frameAtual][i];   
   }
-	for(int i = 0; i<3; i++){     //Aproxima a posicao atual da posicao definida
+	for(int i = 0; i<3; i++){       //Aproxima a posicao atual da posicao definida
 		if(coordenadas[i]<obj[i]){  //para o frame atual em pequenos incrementos.
 			coordenadas[i]+=1;
 		} else if(coordenadas[i]>obj[i]){
@@ -102,8 +102,8 @@ void calcs(){
   float y = coordenadas[1];
   float z = coordenadas[2];
 
-  float s = sqrt((x*x)+(y*y));  //Calcula a menor distância entre a base e o vértice z. 
-  float sg = s+erro[3];         //Tira o comprimento da garra deste valor.
+  float s = sqrt((x*x)+(y*y));      //Calcula a menor distância entre a base e o vértice z. 
+  float sg = s+erro[3];             //Tira o comprimento da garra deste valor.
 	float d = sqrt((sg*sg)+(z*z));  //Calcula o vetor entre a posicao final da garra e a base.
 
 	float theta = asin(z/d) * (180.0 / PI);                          //Calcula o angulo oposto à aresta da coordenada z.
@@ -117,26 +117,26 @@ void calcs(){
 	float anguloAntebraco = alpha + theta + phi;  //Calcula o angulo do servo do antebraco.
 	float anguloBase = atan(y/x) * (180.0 / PI);  //calcula o angulo do servo da base.
 	
-	angulos[0] = ((int)anguloBase)+erro[0];      //Converte o valor para inteiro e adiciona o erro.
-	angulos[1] = ((int)anguloBraco)+erro[1];  //Converte o valor para inteiro e adiciona o erro.
-	angulos[2] = ((int)anguloAntebraco)+erro[2];       //Converte o valor para inteiro e adiciona o erro.
+	angulos[0] = ((int)anguloBase)+erro[0];       //Converte o valor para inteiro e adiciona o erro.
+	angulos[1] = ((int)anguloBraco)+erro[1];      //Converte o valor para inteiro e adiciona o erro.
+	angulos[2] = ((int)anguloAntebraco)+erro[2];  //Converte o valor para inteiro e adiciona o erro.
 }
 
 void verificacao(){
 	for(int i = 0; i < 3; i++){
 			if (angulos[i] < limiteBaixo[i]){        //Verifica se o angulo calculado é 
-				angulos[i] = limiteBaixo[i];           //menor que o limite e o corrige.
+				angulos[i] = limiteBaixo[i];         //menor que o limite e o corrige.
 			} else if (angulos[i] > limiteAlto[i]){  //Verifica se o angulo calculado é 
-				angulos[i] = limiteAlto[i];            //maior que o limite e o corrige.
+				angulos[i] = limiteAlto[i];          //maior que o limite e o corrige.
 			}
 	}
 }
 
 void abrirGarra(){
 	if(garraAberta != frame[frameAtual][3]){  //Verifica se a garra está na posição ordenada pelo roteiro.
-		garraAberta=!garraAberta;               //Altera o estado da garra caso ela não esteja.
+		garraAberta=!garraAberta;             //Altera o estado da garra caso ela não esteja.
 	}
-  if(!garraAberta){                         //Define o angulo do servo da garra de acordo com o estado dela.
+  if(!garraAberta){                           //Define o angulo do servo da garra de acordo com o estado dela.
     angulos[3]=limiteAlto[3];
   } else {
     angulos[3]=limiteBaixo[3];
