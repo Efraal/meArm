@@ -93,12 +93,12 @@ void incremento(){
   } else if(joystick[1]>zonaMorta[1]){
     angulos[1]-=acel;
   }
-  if(joystick[2]<zonaMorta[0]){
+  if(joystick[3]<zonaMorta[0]){
     angulos[2]+=acel;
   } else if(joystick[2]>zonaMorta[1]){
     angulos[2]-=acel;
   }
-  if(joystick[3]<zonaMorta[0]){
+  if(joystick[2]<zonaMorta[0]){
     angulos[3]+=acel;
   } else if(joystick[3]>zonaMorta[1]){
     angulos[3]-=acel;
